@@ -165,3 +165,9 @@ restapi/
 ## Stopping the Server
 
 Press `Ctrl+C` in the terminal where the server is running.
+
+## Bootcamp Homework
+
+- We are tasked to create a delete function in the app that deletes the users from the database.
+- This will be a `DELETE` request to the endpoint `/api/users/<username>`.
+- Also we will add a button to do this in the web app.

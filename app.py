@@ -122,6 +122,51 @@ def add_user():
             'message': f'User {username} already exists in database'
         }), 409
 
+# The homework task for deleting a user with a DELETE request is defined as a function below, we repurpose the add user
+# given above.
+@app.route('/api/users', methods=['DELETE'])
+def delete_user():
+    """Delete an existing user in the database"""
+    data = request.get_json()
+
+    if not data or 'username' not in data:
+        return jsonify({
+            'error': 'Username is required',
+            'message': 'Please provide username in request body'
+        }), 400
+
+    username = data['username']
+
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Check if user exists first
+        cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
+        user = cursor.fetchone()
+
+        if not user:
+            return jsonify({
+                'error': 'User not found',
+                'message': f'User {username} does not exist in database'
+            }), 404
+
+        # Delete the user
+        cursor.execute('DELETE FROM users WHERE username = ?', (username,))
+        conn.commit()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'message': f'User {username} deleted successfully',
+            'username': username
+        }), 200
+
+    except Exception as e:
+        return jsonify({
+            'error': 'Database error',
+            'message': str(e)
+        }), 500
 @app.route('/', methods=['GET'])
 def home():
     """Home endpoint with visual database viewer"""
