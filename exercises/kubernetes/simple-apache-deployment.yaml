@@ -1,0 +1,21 @@
+apiVersion: apps/v1  # Specifies the API version for the object. "apps/v1" is the standard for Deployments.
+kind: Deployment     # The type of Kubernetes resource being created.
+metadata:            # Metadata about the Deployment itself.
+  name: simple-apache-deployment # The unique name of the Deployment.
+  labels:            # Labels to categorize the Deployment, useful for querying.
+    app: apache
+spec:                # The specification of the desired state for the Deployment.
+  replicas: 3        # The desired number of Pod replicas to run. Kubernetes will maintain this count.
+  selector:          # Defines how the Deployment finds which Pods to manage.
+    matchLabels:     # Must match the labels defined in the pod template below.
+      app: apache
+  template:          # The template used to create the Pods.
+    metadata:        # Metadata for the Pods created by this Deployment.
+      labels:        # Labels attached to each Pod. Must match the selector above.
+        app: apache
+    spec:            # The specification for the Pod's contents.
+      containers:    # List of containers to run within the Pod.
+        - name: apache          # The name of the container.
+          image: httpd:latest   # The Docker image to use for the container (Apache HTTP Server).
+          ports:
+            - containerPort: 80 # The port that the container exposes.
