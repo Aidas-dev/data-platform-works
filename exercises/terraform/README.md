@@ -17,3 +17,6 @@ To remove all created resources and avoid incurring unnecessary costs, use the f
 terraform destroy -auto-approve
 ```
 
+**Note:** Always verify in the AWS Console that all resources have been terminated to ensure no unexpected charges occur.
+
+
