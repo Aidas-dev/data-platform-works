@@ -7,5 +7,5 @@ variable "aws_region" {
 variable "table_name" {
   description = "The name of the DynamoDB table"
   type        = string
-  default     = "aidas-users"
+  default     = "aidas-table"
 }
