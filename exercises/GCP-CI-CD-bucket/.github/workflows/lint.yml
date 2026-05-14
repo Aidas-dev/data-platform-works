@@ -1,0 +1,68 @@
+name: Lint
+
+on:
+  pull_request:
+    paths:
+      - 'exercises/GCP-CI-CD-bucket/**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '0.145.0'
+          extended: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install linters
+        run: |
+          npm install -g markdownlint-cli2 htmlhint
+
+      - name: Lint markdown files
+        run: markdownlint-cli2 "exercises/GCP-CI-CD-bucket/hugo-site/content/**/*.md"
+
+      - name: Validate Hugo build
+        run: hugo --gc
+        working-directory: exercises/GCP-CI-CD-bucket/hugo-site
+
+      - name: Lint generated HTML
+        run: npx htmlhint "exercises/GCP-CI-CD-bucket/hugo-site/public/**/*.html"
+
+      - name: Verify deployment files exist
+        run: |
+          test -f exercises/GCP-CI-CD-bucket/hugo-site/public/index.html
+          echo "index.html generated successfully"
+
+  terraform-validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.9.0'
+
+      - name: Terraform fmt check
+        run: terraform fmt -check -recursive
+        working-directory: exercises/GCP-CI-CD-bucket/terraform
+
+      - name: Terraform init
+        run: terraform init
+        working-directory: exercises/GCP-CI-CD-bucket/terraform
+
+      - name: Terraform validate
+        run: terraform validate -var="gcp_project_id=ci-check" -var="bucket_name=ci-check-bucket"
+        working-directory: exercises/GCP-CI-CD-bucket/terraform

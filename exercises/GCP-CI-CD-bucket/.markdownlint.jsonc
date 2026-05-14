@@ -1,0 +1,16 @@
+{
+  // Markdown linting rules
+  // https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+
+  "default": true,               // Enable all rules by default
+  "MD013": {                     // Line length - disable for readability
+    "line_length": 120,
+    "code_blocks": false,
+    "tables": false
+  },
+  "MD024": {                     // Multiple headings with same content
+    "siblings_only": true        // Allow if they're not siblings
+  },
+  "MD033": false,                // Allow inline HTML (needed for Hugo shortcodes)
+  "MD041": false                 // Allow first line not being a top-level heading
+}

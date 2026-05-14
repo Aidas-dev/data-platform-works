@@ -1,0 +1,9 @@
+baseURL = "https://storage.googleapis.com/YOUR_BUCKET_NAME/"
+languageCode = "en-us"
+title = "My GCP CI/CD Website"
+theme = "minimal"
+publishDir = "public"
+
+[params]
+  author = "Student"
+  description = "Static site deployed via GCP CI/CD pipeline"

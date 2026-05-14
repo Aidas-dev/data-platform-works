@@ -1,0 +1,74 @@
+name: Deploy to GCS
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'exercises/GCP-CI-CD-bucket/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '0.145.0'
+          extended: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install linters
+        run: |
+          npm install -g markdownlint-cli2 htmlhint
+
+      - name: Lint markdown
+        run: markdownlint-cli2 "exercises/GCP-CI-CD-bucket/hugo-site/content/**/*.md"
+        continue-on-error: true
+
+      - name: Build Hugo site
+        run: hugo --gc --minify
+        working-directory: exercises/GCP-CI-CD-bucket/hugo-site
+
+      - name: Lint generated HTML
+        run: npx htmlhint "exercises/GCP-CI-CD-bucket/hugo-site/public/**/*.html"
+        continue-on-error: true
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_SA_EMAIL }}
+
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy to GCS bucket
+        run: |
+          gsutil rsync -r exercises/GCP-CI-CD-bucket/hugo-site/public/ gs://${{ secrets.GCP_BUCKET_NAME }}/
+          echo "Deployed to: https://storage.googleapis.com/${{ secrets.GCP_BUCKET_NAME }}/index.html"
+
+      - name: Smoke test - verify site is live
+        run: |
+          URL="https://storage.googleapis.com/${{ secrets.GCP_BUCKET_NAME }}/index.html"
+          echo "Checking $URL"
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+          if [ "$HTTP_STATUS" -ne 200 ]; then
+            echo "Smoke test FAILED - HTTP $HTTP_STATUS"
+            exit 1
+          fi
+          echo "Smoke test PASSED - HTTP 200"
+
+      - name: Invalidate CDN cache
+        if: false
+        run: |
+          gcloud compute url-maps invalidate-cdn-cache URL_MAP_NAME \
+            --path "/*"

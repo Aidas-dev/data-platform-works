@@ -1,0 +1,26 @@
+# Secrets / credentials
+*.json
+!package.json
+!tsconfig.json
+!package-lock.json
+secrets/
+.env
+.env.*
+
+# Build output
+exercises/GCP-CI-CD-bucket/hugo-site/public/
+
+# Terraform state
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
