@@ -3,7 +3,7 @@ title = "Home"
 date = 2026-05-14T00:00:00Z
 +++
 
-# Hello from GCP CI/CD 🚀
+## Hello from GCP CI/CD 🚀
 
 If you see this, my pipeline works! (v3)
 

@@ -1,7 +1,7 @@
 baseURL = "https://storage.googleapis.com/YOUR_BUCKET_NAME/"
 languageCode = "en-us"
 title = "My GCP CI/CD Website"
-theme = "minimal"
+# No theme — custom layouts only
 publishDir = "public"
 
 [params]
