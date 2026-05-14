@@ -17,3 +17,13 @@ output "gcs_project_id" {
   description = "GCP project ID"
   value       = var.gcp_project_id
 }
+
+output "sa_email" {
+  description = "Service account email for GitHub Actions"
+  value       = google_service_account.github_actions_deployer.email
+}
+
+output "wif_provider_name" {
+  description = "Workload Identity Provider resource name"
+  value       = google_iam_workload_identity_pool_provider.github_provider.name
+}

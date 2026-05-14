@@ -24,3 +24,8 @@ variable "environment" {
   type        = string
   default     = "dev"
 }
+
+variable "github_repo" {
+  description = "GitHub repository in org/repo format (e.g., my-org/my-repo)"
+  type        = string
+}
