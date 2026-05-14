@@ -1,7 +1,7 @@
 {
   "tagname-lowercase": true,
   "attr-lowercase": true,
-  "attr-value-double-quotes": true,
+  "attr-value-double-quotes": false,  # Hugo minifier strips quotes — valid HTML5
   "tag-pair": true,
   "spec-char-escape": true,
   "id-unique": true,
